@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Inventory </title>
+		<style>
+		body {
+        		background-image: url("https://mrwallpaper.com/images/hd/cute-kawaii-molang-blue-stripes-r2r4xfjj4jd9471j.jpg");
+			background-repeat: no-repeat;
+			background-size: cover;		
+		}
+		</style>
+	</head>
+	<body>
+		<form id="basta">
+			<h1> Inventory </h1>
+			<input type = "button" onclick="addItem()" value="Enter supply">
+		</form>
+		<h2> Your supplies: </h2>
+		<ul id="listahan"> </ul>
+		<script>
+			var supplies = [];
+			
+			function addItem(){
+				var name = prompt("Enter the name of the item: ");
+				var num = parseInt(prompt("Enter the quantity of the items: "));
+				var item = {name: name, num: num};
+				supplies.push(item);
+				displayItems();
+			}
+			function displayItems() {
+					var list = document.getElementById("listahan");
+					list.innerHTML = "";
+					 supplies.forEach(function(item) {
+						var li = document.createElement("li");
+						var add = document.createElement("button");
+						var minus = document.createElement("button");
+						minus.textContent = "-";
+						minus.onclick = function() { subNoOfItem(item); };
+						add.textContent = "+";
+						add.onclick = function() { addNoOfItem(item); };
+						 li.textContent = item.name + ": "  +  item.num + "         ";
+						li.appendChild(add);
+						li.appendChild(minus);
+						 list.appendChild(li);
+					});
+			}
+			function addNoOfItem(item){
+				item.num++;
+				displayItems();
+			}
+			function subNoOfItem(item){
+				if (item.num >0) {
+					item.num--;	
+					if(item.num == 0) {
+						var index = supplies.indexOf(item);
+						supplies.splice(index, 1);
+					}	
+					displayItems();
+				}
+			}
+		</script>
+	</body>
+</html>
+	
