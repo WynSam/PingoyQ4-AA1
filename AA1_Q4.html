@@ -3,62 +3,180 @@
 	<head>
 		<title> Inventory </title>
 		<style>
-		body {
-        		background-image: url("https://mrwallpaper.com/images/hd/cute-kawaii-molang-blue-stripes-r2r4xfjj4jd9471j.jpg");
+			body{
+			  font-family: Arial, sans-serif;
+			  margin: 20px;
+			  background-color: #f5f5f5;
+        		background-image: url("https://i.pinimg.com/564x/bd/39/16/bd39168f6c42ad371baa3d3d64019049.jpg");
 			background-repeat: no-repeat;
-			background-size: cover;		
-		}
-		</style>
+			background-size: cover;
+			}
+			form{
+			  display: flex;
+			  flex-direction: column;
+			  gap: 10px;
+			  background-color: #fff;
+			  border: 1px solid #ddd;
+			  padding: 15px;
+			  border-radius: 4px;
+			}
+			form h1{
+			  text-align: center;
+			  color: #333;
+			  font-family: "PixelifySans";
+			}
+			input{
+				max-width: 20%;
+			}
+			label{
+			  font-weight: bold;
+			  color: #333;
+			}
+			table{
+			  border-collapse: collapse;
+			  width: 100%;
+			  table-layout: fixed;
+			}
+			th, td{
+			  border: 1px solid #ddd;
+			  padding: 8px;
+			  text-align: left;
+			}
+			td {
+			  color: white;
+			}
+			th{
+			  background-color: #eee;
+			}
+			button{
+			  padding: 5px 10px;
+			  border: 1px solid #ccc;
+			  border-radius: 4px;
+			  cursor: pointer;
+			  background-color: #4CAF50;
+			  color: white;
+			  transition: 0.4s ease;
+			}
+			button:hover{
+			  background-color: #3e8e41;
+			}
+		  </style>
 	</head>
 	<body>
-		<form id="basta">
+		<form id="form">
 			<h1> Inventory </h1>
-			<input type = "button" onclick="addItem()" value="Enter supply">
+			<label for="input">Supply name:</label>
+			<input type="text" id="input" placeholder="Supply name">
+			<label for="amount">Amount:</label>
+			<input type="number" id="amount" placeholder="Amount">
+			<button type="button" onclick="addItem()"> Add supply </button>
+			<button type="button" onclick="addNoOfItem()"> Add items </button>
+			<button type="button" onclick="subNoOfItem()"> Subtract items </button>
+            <button type="button" onclick="removeItem()"> Remove supply </button>
+            <br><br>
 		</form>
-		<h2> Your supplies: </h2>
-		<ul id="listahan"> </ul>
+		<table id="table">
+            <thead>
+                <tr>
+                    <th>Supply Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
 		<script>
 			var supplies = [];
-			
-			function addItem(){
-				var name = prompt("Enter the name of the item: ");
-				var num = parseInt(prompt("Enter the quantity of the items: "));
-				var item = {name: name, num: num};
-				supplies.push(item);
-				displayItems();
-			}
-			function displayItems() {
-					var list = document.getElementById("listahan");
-					list.innerHTML = "";
-					 supplies.forEach(function(item) {
-						var li = document.createElement("li");
-						var add = document.createElement("button");
-						var minus = document.createElement("button");
-						minus.textContent = "-";
-						minus.onclick = function() { subNoOfItem(item); };
-						add.textContent = "+";
-						add.onclick = function() { addNoOfItem(item); };
-						 li.textContent = item.name + ": "  +  item.num + "         ";
-						li.appendChild(add);
-						li.appendChild(minus);
-						 list.appendChild(li);
-					});
-			}
-			function addNoOfItem(item){
-				item.num++;
-				displayItems();
-			}
-			function subNoOfItem(item){
-				if (item.num >0) {
-					item.num--;	
-					if(item.num == 0) {
-						var index = supplies.indexOf(item);
-						supplies.splice(index, 1);
-					}	
+
+			function addItem() {
+				const supplyInput = document.getElementById('input');
+				const amountInput = document.getElementById('amount');
+				const supplyName = supplyInput.value.trim();
+				const amount = parseInt(amountInput.value);
+
+				if (supplyName && !isNaN(amount) && amount > 0) {
+					const existingSupplyIndex = supplies.findIndex(item => item.name === supplyName);
+					if (existingSupplyIndex !== -1) {
+						supplies[existingSupplyIndex].amount += amount;
+					} else {
+						supplies.push({ name: supplyName, amount: amount });
+					}
 					displayItems();
+					supplyInput.value = '';
+					amountInput.value = '';
+				} else {
+					alert('Please enter a valid supply name and amount.');
 				}
 			}
+
+			function addNoOfItem() {
+				const supplyInput = document.getElementById('input');
+				const amountInput = document.getElementById('amount');
+				const supplyName = supplyInput.value.trim();
+				const amount = parseInt(amountInput.value);
+
+				if (supplyName && !isNaN(amount) && amount > 0) {
+					const existingSupplyIndex = supplies.findIndex(item => item.name === supplyName);
+					if (existingSupplyIndex !== -1) {
+						supplies[existingSupplyIndex].amount += amount;
+						displayItems();
+						amountInput.value = '';
+					} else {
+						alert('Supply not found in inventory.');
+					}
+				} else {
+					alert('Please enter a valid supply name and amount.');
+				}
+			}
+
+			function subNoOfItem() {
+				const supplyInput = document.getElementById('input');
+				const amountInput = document.getElementById('amount');
+				const supplyName = supplyInput.value.trim();
+				const amount = parseInt(amountInput.value);
+
+				if (supplyName && !isNaN(amount) && amount > 0) {
+					const existingSupplyIndex = supplies.findIndex(item => item.name === supplyName);
+					if (existingSupplyIndex !== -1 && supplies[existingSupplyIndex].amount >= amount) {
+						supplies[existingSupplyIndex].amount -= amount;
+						displayItems();
+						amountInput.value = '';
+					} else {
+						alert('Supply not found in inventory or insufficient quantity.');
+					}
+				} else {
+					alert('Please enter a valid supply name and amount.');
+				}
+			}
+
+            function removeItem() {
+            	const supplyInput = document.getElementById('input');
+            	const supplyName = supplyInput.value.trim();
+
+            	if (supplyName) {
+                	const existingSupplyIndex = supplies.findIndex(item => item.name === supplyName);
+                	if (existingSupplyIndex !== -1) {
+                    	supplies.splice(existingSupplyIndex, 1);
+                    	displayItems();
+                    	supplyInput.value = '';
+                	} else {
+                    	alert('Supply not found in inventory.');
+                	}
+            	} else {
+                alert('Please enter a valid supply name.');
+            	}
+        	}
+
+            function displayItems() {
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
+                
+                supplies.forEach(item => {
+                    var row = tableBody.insertRow();
+                    row.insertCell().textContent = item.name;
+                    row.insertCell().textContent = item.amount;
+                });
+            }
 		</script>
 	</body>
 </html>
-	
